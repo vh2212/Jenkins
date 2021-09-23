@@ -1,0 +1,322 @@
+swagger: "2.0"
+info:
+  description: Este es un archivo swagger que trabaja con nuestro código de servidor.
+  version: "1.2.0"
+  title: Swagger REST API
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+basePath: "/api"
+
+# soporte de rutas para el servidor
+paths:
+  /people:
+    get:
+      operationId: "people.read_all"
+      tags:
+        - "People"
+      summary: "La estructura de datos de personas soportada por el servidor de aplicaciones."
+      description: "Lectura de la lista de personas."
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Núemro de personas para obtener de people.
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset de inicio de lista de people.
+      responses:
+        200:
+          description: "Exito al leer la lista de operaciones de personas."
+          schema:
+            type: "array"
+            items:
+              properties:
+                person_id:
+                  type: string
+                fname:
+                  type: "string"
+                lname:
+                  type: "string"
+                timestamp:
+                  type: "string"
+                notes:
+                  type: array
+                  items:
+                    properties:
+                      person_id:
+                        type: integer
+                      note_id:
+                        type: integer
+                      content:
+                        type: string
+                      timestamp:
+                        type: string
+    
+    post:
+      operationId: people.create
+      tags:
+        - "People"
+      summary: Crear una persona y agregarla a la lista de personas.
+      description: Crear una persona.
+      parameters:
+        - name: person
+          in: body
+          description: La persona a crear.
+          required: True
+          schema:
+            type: "object"
+            properties:
+              fname:
+                type: "string"
+                description: Nombre de la persona a crear.
+              lname:
+                type: "string"
+                description: Apellido de la persona a crear.
+      responses:
+        201:
+          description: Exito al crear la persona en la lista.
+  
+  /people/{person_id}:
+    get:
+      operationId: "people.read_one"
+      tags:
+        - "People"
+      summary: "La estructura de datos de personas soportada por el servidor de aplicaciones."
+      description: "Lectura de la lista de personas."
+      parameters:
+        - name: person_id
+          in: path
+          type: integer
+          description: Id de la personal que se obtiene de la lista.
+          required: True
+      responses:
+        200:
+          description: "Exito al leer la lista de operaciones de personas."
+          schema:
+            type: "array"
+            items:
+              properties:
+                person_id:
+                  type: string
+                fname:
+                  type: "string"
+                lname:
+                  type: "string"
+                timestamp:
+                  type: "string"
+                notes:
+                  type: array
+                  items:
+                    properties:
+                      person_id:
+                        type: integer
+                      note_id:
+                        type: integer
+                      content:
+                        type: string
+                      timestamp:
+                        type: string
+    
+    put:
+      operationId: people.update
+      tags:
+        - People
+      summary: Actualiza una persona de la lista de personas.
+      description: Actualiza una persona.
+      parameters:
+        - name: person_id
+          in: path
+          type: integer
+          description: Id de la persona a actualizar de la lista.
+          required: True
+        - name: person
+          in: body
+          description: Persona a actualizar.
+          required: True
+          schema:
+            type: object
+            properties:
+              fname:
+                type: string
+                description: Nombre de la persona a actualizar.
+              lname:
+                type: string
+                description: Apellido de la persona a actualizar.
+      responses:
+        202:
+          description: Exito al actualizar la persona en la lista.
+    
+    delete:
+      operationId: people.delete
+      tags:
+        - People
+      summary: Elimina una persona de la lista de personas.
+      description: Elimina una persona.
+      parameters:
+        - name: person_id
+          in: path
+          type: integer
+          description: Id de la persona a actualizar de la lista.
+          required: True
+      responses:
+        203:
+          description: Exito al eliminar la persona en la lista.
+  
+  /notes:
+    get:
+      operationId: notes.read_all
+      tags:
+        - Notes
+      summary: Leer las notas de todas las personas.
+      description: Leer las notas de todas las personas.
+      responses:
+        200:
+          description: Exito al leer las notas.
+          schema:
+            type: array
+            items:
+              properties:
+                note_id:
+                  type: integer
+                content:
+                  type: string
+                timestamp:
+                  type: string
+                person:
+                  type: object
+                  properties:
+                    person_id:
+                      type: integer
+                    fname:
+                      type: string
+                    lname:
+                      type: string
+                    timestamp:
+                      type: string
+
+  #/notes/{note_id}:
+    #opcional get
+    #get:
+      #operationId: notes.read_one
+                
+    #opcional put
+    #put:
+      #operationId: notes.update
+                
+    #opcional delete
+    #delete:
+      #operationId: notes.delete
+                
+  /people/{person_id}/notes:
+    post:
+      operationId: notes.create
+      tags:
+        - Notes
+      summary: Crear una nota asociada a una persona.
+      description: Crear una nota asociada a una persona.
+      parameters:
+        - name: person_id
+          in: path
+          description: Id de la persona asociada con la nota.
+          type: integer
+          required: True
+        - name: note
+          in: body
+          description: Contenido de la nota.
+          required: True
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+      responses:
+        201:
+          description: Exito al crear la nota.
+                
+  /people/{person_id}/notes/{note_id}:
+    get:
+      operationId: notes.read_one
+      tags:
+        - Notes
+      summary: Leer una nota asociada a una persona.
+      description: Leer una nota asociada a una persona.
+      parameters:
+        - name: person_id
+          in: path
+          description: Id de la persona asociada con la nota.
+          type: integer
+          required: True
+        - name: note_id
+          in: path
+          description: Id de la nota.
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Exito al leer la nota de una persona.
+          schema:
+            type: array
+            items:
+              properties:
+                note_id:
+                  type: integer
+                person_id:
+                  type: integer
+                content:
+                  type: string
+                timestamp:
+                  type: string
+                
+    put:
+      operationId: notes.update
+      tags:
+        - Notes
+      summary: Actualización de una nota asociada a una persona.
+      description: Actualización de una nota asociada a una persona.
+      parameters:
+        - name: person_id
+          in: path
+          description: Id de la persona asociada con la nota.
+          type: integer
+          required: True
+        - name: note_id
+          in: path
+          description: Id de la nota.
+          type: integer
+          required: True
+        - name: note
+          in: body
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+      responses:
+        202:
+          description: Exito al actualizar la nota.
+                
+    delete:
+      operationId: notes.delete
+      tags:
+        - Notes
+      summary: Eliminar una nota asociada con una persona.
+      description: Eliminar una nota asociada con una persona.
+      parameters:
+        - name: person_id
+          in: path
+          description: Id de la persona asociada con la nota.
+          type: integer
+          required: True
+        - name: note_id
+          in: path
+          description: Id de la nota.
+          type: integer
+          required: True
+      responses:
+        203:
+          description: Exito al eliminar una nota.
